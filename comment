@@ -1,0 +1,6 @@
+1.FRONT、BEHIND、LEFT、RIGHT都是枚举项，它们都是本类的实例
+2.loadsh
+3.premain 探针入口
+4.RunTime.getRunTime().addShutdownHook优雅关闭线程池
+5.:: 方法引用
+6.ByteBuddy 字节码修改
