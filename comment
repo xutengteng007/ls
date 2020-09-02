@@ -4,3 +4,24 @@
 4.RunTime.getRunTime().addShutdownHook优雅关闭线程池
 5.:: 方法引用
 6.ByteBuddy 字节码修改
+7.Prometheus整合nacos
+- job_name: 'nacos-register-service'
+  metrics_path: '/actuator/prometheus'
+  consul_sd_configs:
+  - server: '10.110.60.13:31443'
+    services: []
+  relabel_configs:
+  - source_labels: [__meta_consul_service_metadata_management_context_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: ${1}/prometheus
+  - source_labels: [__meta_consul_service]   # 匹配原标签
+    regex: (.*) # 匹配对应的值
+    target_label: service_name    # 新的标签的key值
+    replacement: '$1'             # 替换的内容 value
+ 
+调用重写接口：/v1/agent/self，/v1/catalog/services，/v1/catalog/service/{appName}
+@Autowired
+    private DiscoveryClient discoveryClient;
+            // 转换consul 与nacos
+            List<ServiceInstance> instances = discoveryClient.getInstances(appName);
